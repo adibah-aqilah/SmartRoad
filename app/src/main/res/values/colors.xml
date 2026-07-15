@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core Brand Colours (High Contrast for Accessibility) -->
+    <color name="primary_road">#1A202C</color>      <!-- Deep Charcoal (Neutral, safe for text) -->
+    <color name="accent_warning">#E69F00</color>    <!-- Accessible Orange (Distinct for Color Blindness) -->
+    <color name="background_light">#F8F9FA</color>  <!-- Off-White (Reduces eye strain) -->
+
+    <!-- Status Colours (Vetted for Protanopia, Deuteranopia, and Tritanopia) -->
+    <!-- We use different luminosities and tints to ensure they aren't just distinguishable by hue -->
+    <color name="status_new">#D55E00</color>          <!-- Vermillion (Accessible alternative to Red) -->
+    <color name="status_investigating">#0072B2</color> <!-- Deep Blue (Universal safe color) -->
+    <color name="status_resolved">#009E73</color>      <!-- Bluish Green (Distinguishable from Vermillion) -->
+
+    <!-- Neutral Shades for Borders and Cards -->
+    <color name="border_light">#E2E8F0</color>
+    <color name="text_secondary">#4A5568</color>
+
+    <!-- Standard UI Helpers -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
