@@ -13,3 +13,22 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+
+# Eclipse workspace files
+.metadata/
+Servers/
+
+# Java build output
+bin/
+target/
+*.class
+
+# Firebase server credentials
+firebase-service-account.json
+service-account*.json
+*service-account*.json
+
+# Operating system files
+.DS_Store
+Thumbs.db
