@@ -1,103 +1,395 @@
 package com.example.smartroad;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import android.widget.ImageButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity
+        implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private FusedLocationProviderClient fusedLocationClient;
+    private FirebaseFirestore db;
+
     private TextView tvGreeting;
-    private ImageButton btnAbout, btnProfile;
+    private ImageButton btnAbout;
+    private ImageButton btnProfile;
     private ExtendedFloatingActionButton fabReport;
+
+    private double selectedLat = 0;
+    private double selectedLng = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialise UI components
+        fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(this);
+
+        db = FirebaseFirestore.getInstance();
+
         tvGreeting = findViewById(R.id.tvGreeting);
         btnAbout = findViewById(R.id.btnAbout);
         btnProfile = findViewById(R.id.btnProfile);
         fabReport = findViewById(R.id.fabReport);
 
-        // Hardcoded greeting for Task 1 (Will pull actual name from Firebase in Task 2)
-        tvGreeting.setText("Hello, John Doe!");
+        FirebaseUser user =
+                FirebaseAuth.getInstance().getCurrentUser();
 
-        // Load the Google Maps Fragment safely
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        if (user != null && user.getEmail() != null) {
+
+            String name =
+                    user.getEmail().split("@")[0];
+
+            name = name.replace("_", " ");
+            name = name.replace(".", " ");
+
+            name = name.substring(0, 1).toUpperCase()
+                    + name.substring(1);
+
+            tvGreeting.setText("Hello, " + name + "!");
+        }
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment)
+                        getSupportFragmentManager()
+                                .findFragmentById(R.id.map);
+
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        // Navigate to Report Form Screen
-        fabReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ReportHazardActivity.class);
-                startActivity(intent);
-            }
+        btnAbout.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            MainActivity.this,
+                            AboutActivity.class
+                    );
+
+            startActivity(intent);
         });
 
-        // Navigate to About Screen
-        btnAbout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-                startActivity(intent);
-            }
+        btnProfile.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            MainActivity.this,
+                            ProfileActivity.class
+                    );
+
+            startActivity(intent);
         });
 
-        // Navigate to Profile Screen
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
+        fabReport.setOnClickListener(v -> {
+
+            if (selectedLat == 0 &&
+                    selectedLng == 0) {
+
+                Toast.makeText(
+                        this,
+                        "Please select hazard location first",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
             }
+
+            Intent intent =
+                    new Intent(
+                            MainActivity.this,
+                            ReportHazardActivity.class
+                    );
+
+            intent.putExtra("LAT", selectedLat);
+            intent.putExtra("LNG", selectedLng);
+
+            startActivity(intent);
         });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
-        // Default map coordinates centered over a region (e.g., Kuala Lumpur area)
-        LatLng defaultLocation = new LatLng(3.1569, 101.6123);
+        getCurrentLocation();
 
-        // Sample hazard marker setup for Task 1 demonstration
-        mMap.addMarker(new MarkerOptions()
-                .position(defaultLocation)
-                .title("Pothole (Status: New)")
-                .snippet("Click for details")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        loadHazardsFromFirestore();
 
-        // Setup Marker Click Listener for Hazard Details
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
-                Intent intent = new Intent(MainActivity.this, HazardDetailsActivity.class);
-                startActivity(intent);
-                return true;
-            }
+        mMap.setOnMapClickListener(latLng -> {
+
+            selectedLat = latLng.latitude;
+            selectedLng = latLng.longitude;
+
+            mMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .title("Hazard Location Selected")
+                            .icon(
+                                    BitmapDescriptorFactory.defaultMarker(
+                                            BitmapDescriptorFactory.HUE_VIOLET
+                                    )
+                            )
+            );
+
+            Toast.makeText(
+                    this,
+                    "Hazard Location Selected",
+                    Toast.LENGTH_SHORT
+            ).show();
         });
 
-        // Frame the map camera smoothly to the location
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14.0f));
+        mMap.setOnMarkerClickListener(marker -> {
+
+            if ("You Are Here".equals(
+                    marker.getTitle())) {
+
+                return true;
+            }
+
+            if ("Hazard Location Selected".equals(
+                    marker.getTitle())) {
+
+                return true;
+            }
+
+            String documentId =
+                    (String) marker.getTag();
+
+            if (documentId == null) {
+                return true;
+            }
+
+            db.collection("hazards")
+                    .document(documentId)
+                    .get()
+                    .addOnSuccessListener(document -> {
+
+                        Intent intent =
+                                new Intent(
+                                        MainActivity.this,
+                                        HazardDetailsActivity.class
+                                );
+
+                        intent.putExtra(
+                                "TYPE",
+                                document.getString(
+                                        "hazardType"
+                                )
+                        );
+
+                        intent.putExtra(
+                                "STATUS",
+                                document.getString(
+                                        "status"
+                                )
+                        );
+
+                        intent.putExtra(
+                                "DESCRIPTION",
+                                document.getString(
+                                        "description"
+                                )
+                        );
+
+                        intent.putExtra(
+                                "REPORTER",
+                                document.getString(
+                                        "reporter"
+                                )
+                        );
+
+                        intent.putExtra(
+                                "IMAGE_URL",
+                                document.getString(
+                                        "imageUrl"
+                                )
+                        );
+
+                        Double lat =
+                                document.getDouble(
+                                        "latitude"
+                                );
+
+                        Double lng =
+                                document.getDouble(
+                                        "longitude"
+                                );
+
+                        intent.putExtra(
+                                "LOCATION",
+                                lat + ", " + lng
+                        );
+
+                        startActivity(intent);
+
+                    });
+
+            return true;
+        });
+    }
+
+    private void loadHazardsFromFirestore() {
+
+        db.collection("hazards")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    for (QueryDocumentSnapshot document :
+                            queryDocumentSnapshots) {
+
+                        String hazardType =
+                                document.getString(
+                                        "hazardType"
+                                );
+
+                        Double latitude =
+                                document.getDouble(
+                                        "latitude"
+                                );
+
+                        Double longitude =
+                                document.getDouble(
+                                        "longitude"
+                                );
+
+                        if (latitude != null &&
+                                longitude != null) {
+
+                            LatLng location =
+                                    new LatLng(
+                                            latitude,
+                                            longitude
+                                    );
+
+                            Marker marker =
+                                    mMap.addMarker(
+                                            new MarkerOptions()
+                                                    .position(location)
+                                                    .title(hazardType)
+                                    );
+
+                            if (marker != null) {
+
+                                marker.setTag(
+                                        document.getId()
+                                );
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mMap != null) {
+
+            mMap.clear();
+
+            getCurrentLocation();
+
+            loadHazardsFromFirestore();
+        }
+    }
+
+    private void getCurrentLocation() {
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    100
+            );
+
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+
+                    if (location != null) {
+
+                        LatLng currentLocation =
+                                new LatLng(
+                                        location.getLatitude(),
+                                        location.getLongitude()
+                                );
+
+                        mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(currentLocation)
+                                        .title("You Are Here")
+                                        .icon(
+                                                BitmapDescriptorFactory.defaultMarker(
+                                                        BitmapDescriptorFactory.HUE_AZURE
+                                                )
+                                        )
+                        );
+
+                        mMap.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                        currentLocation,
+                                        16f
+                                )
+                        );
+                    }
+                });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(
+                requestCode,
+                permissions,
+                grantResults
+        );
+
+        if (requestCode == 100 &&
+                grantResults.length > 0 &&
+                grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
+
+            getCurrentLocation();
+        }
     }
 }

@@ -61,11 +61,11 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1dp"
             app:strokeColor="@color/border_light"
-            android:layout_marginBottom="24dp">
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,77 +74,92 @@
                 android:padding="16dp"
                 android:weightSum="3">
 
+                <!-- Reports -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
+
                     <TextView
+                        android:id="@+id/tvTotalReports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
-                        android:textStyle="bold"
+                        android:text="0"
+                        android:textColor="@color/primary_road"
                         android:textSize="18sp"
-                        android:textColor="@color/primary_road"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reports"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border_light"/>
+                    android:background="@color/border_light" />
 
+                <!-- Resolved -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
+
                     <TextView
+                        android:id="@+id/tvResolvedReports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8"
-                        android:textStyle="bold"
+                        android:text="0"
+                        android:textColor="@color/accent_success"
                         android:textSize="18sp"
-                        android:textColor="@color/accent_success"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Resolved"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border_light"/>
+                    android:background="@color/border_light" />
 
+                <!-- Points -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
+
                     <TextView
+                        android:id="@+id/tvPoints"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="450"
-                        android:textStyle="bold"
+                        android:text="0"
+                        android:textColor="@color/accent_warning"
                         android:textSize="18sp"
-                        android:textColor="@color/accent_warning"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Points"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
+
 
         <!-- Profile Actions -->
         <com.google.android.material.button.MaterialButton

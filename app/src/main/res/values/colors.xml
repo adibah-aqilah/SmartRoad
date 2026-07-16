@@ -4,6 +4,7 @@
     <color name="primary_road">#1A202C</color>      <!-- Deep Charcoal (Neutral, safe for text) -->
     <color name="accent_warning">#E69F00</color>    <!-- Accessible Orange (Distinct for Color Blindness) -->
     <color name="background_light">#F8F9FA</color>  <!-- Off-White (Reduces eye strain) -->
+    <color name="accent_success">#22C55E</color>
 
     <!-- Status Colours (Vetted for Protanopia, Deuteranopia, and Tritanopia) -->
     <!-- We use different luminosities and tints to ensure they aren't just distinguishable by hue -->
