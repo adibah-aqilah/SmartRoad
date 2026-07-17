@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/report")
-public class ReportDetailsServlet
+@WebServlet("/edit-report")
+public class EditReportServlet
         extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -59,7 +59,7 @@ public class ReportDetailsServlet
             );
 
             request.getRequestDispatcher(
-                    "/reportDetails.jsp"
+                    "/editReport.jsp"
             ).forward(request, response);
 
         } catch (InterruptedException exception) {
@@ -86,30 +86,14 @@ public class ReportDetailsServlet
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        String id =
-                request.getParameter("id");
-
-        String status =
-                request.getParameter("status");
-
-        if (id == null || id.isBlank()) {
-
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Missing report ID."
-            );
-
-            return;
-        }
-
         try {
+
+            HazardReport report =
+                    ReportFormUtil.fromRequest(request);
 
             boolean updated =
                     new HazardReportDAO()
-                            .updateStatus(
-                                    id,
-                                    status
-                            );
+                            .updateReport(report);
 
             if (!updated) {
 
@@ -124,15 +108,19 @@ public class ReportDetailsServlet
             response.sendRedirect(
                     request.getContextPath()
                             + "/report?id="
-                            + id
+                            + report.getId()
             );
 
         } catch (IllegalArgumentException exception) {
 
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
+            request.setAttribute(
+                    "errorMessage",
                     exception.getMessage()
             );
+
+            request.getRequestDispatcher(
+                    "/editReport.jsp"
+            ).forward(request, response);
 
         } catch (InterruptedException exception) {
 
@@ -146,7 +134,7 @@ public class ReportDetailsServlet
         } catch (ExecutionException exception) {
 
             throw new ServletException(
-                    "Unable to update report status.",
+                    "Unable to edit the hazard report.",
                     exception
             );
         }
