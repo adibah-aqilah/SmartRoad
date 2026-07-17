@@ -2,59 +2,28 @@
 <%@ page import="com.smartroad.admin.util.HtmlUtil" %>
 
 <%
-    request.setAttribute(
-            "activePage",
-            "add"
-    );
+    request.setAttribute("activePage", "reports");
 
-    String contextPath =
-            request.getContextPath();
+    String contextPath = request.getContextPath();
+    String errorMessage = (String) request.getAttribute("errorMessage");
+    String defaultDateTime = (String) request.getAttribute("defaultDateTime");
 
-    String errorMessage =
-            (String) request.getAttribute(
-                    "errorMessage"
-            );
-
-    String defaultDateTime =
-            (String) request.getAttribute(
-                    "defaultDateTime"
-            );
-
-    String usernameValue =
-            request.getParameter("username");
-
-    String selectedHazardType =
-            request.getParameter("hazardType");
-
-    String selectedStatus =
-            request.getParameter("status");
-
-    String dateTimeValue =
-            request.getParameter("dateTime");
-
-    String latitudeValue =
-            request.getParameter("latitude");
-
-    String longitudeValue =
-            request.getParameter("longitude");
-
-    String descriptionValue =
-            request.getParameter("description");
-
-    String userAgentValue =
-            request.getParameter("userAgent");
-
-    String imageUrlValue =
-            request.getParameter("imageUrl");
+    String usernameValue = request.getParameter("username");
+    String selectedHazardType = request.getParameter("hazardType");
+    String selectedStatus = request.getParameter("status");
+    String dateTimeValue = request.getParameter("dateTime");
+    String latitudeValue = request.getParameter("latitude");
+    String longitudeValue = request.getParameter("longitude");
+    String descriptionValue = request.getParameter("description");
+    String userAgentValue = request.getParameter("userAgent");
+    String imageUrlValue = request.getParameter("imageUrl");
 
     if (dateTimeValue == null) {
         dateTimeValue = defaultDateTime;
     }
-
     if (selectedStatus == null) {
         selectedStatus = "New";
     }
-
     if (userAgentValue == null) {
         userAgentValue = "Admin Web";
     }
@@ -77,67 +46,48 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Add Report - SmartRoad Admin</title>
-
-    <link rel="stylesheet"
-          href="<%= contextPath %>/css/style.css">
-
+    <link rel="stylesheet" href="<%= contextPath %>/css/style.css">
 </head>
-
 <body>
 
 <div class="app-shell">
 
     <jsp:include page="/common/sidebar.jsp" />
 
-    <div class="main">
+    <main class="main">
 
-        <div class="topbar">
-
+        <header class="topbar">
             <h1>Add Hazard Report</h1>
-
             <div class="admin-chip">
-
-                <span class="avatar">
-                    A
-                </span>
-
+                <span class="avatar">A</span>
                 Admin
-
             </div>
-
-        </div>
+        </header>
 
         <div class="content form-page">
 
-            <a class="back-link"
-               href="<%= contextPath %>/reports">
-
-                &#8592; Back to Reports
-
-            </a>
+            <div class="page-actions">
+                <div>
+                    <h2>Create Report</h2>
+                    <p>Add a new road hazard report.</p>
+                </div>
+                <div class="page-action-buttons">
+                    <a class="btn btn-outline" href="<%= contextPath %>/reports">
+                        Back to Reports
+                    </a>
+                </div>
+            </div>
 
             <%
-                if (errorMessage != null &&
-                        !errorMessage.isBlank()) {
+                if (errorMessage != null && !errorMessage.isBlank()) {
             %>
-
                 <div class="alert alert-error">
-
-                    <%= HtmlUtil.escape(
-                            errorMessage
-                    ) %>
-
+                    <%= HtmlUtil.escape(errorMessage) %>
                 </div>
-
             <%
                 }
             %>
@@ -146,124 +96,62 @@
 
                 <form method="post"
                       action="<%= contextPath %>/add-report"
-                      class="report-form">
+                      class="report-form"
+                      onsubmit="return confirm('Create this hazard report?');">
 
                     <div class="form-grid">
 
                         <div class="form-group">
-
-                            <label for="username">
-                                Username
-                            </label>
-
+                            <label for="username">Username</label>
                             <input id="username"
                                    type="text"
                                    name="username"
                                    required
-                                   value="<%= HtmlUtil.escape(
-                                           usernameValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(usernameValue) %>">
                         </div>
 
                         <div class="form-group">
-
-                            <label for="hazardType">
-                                Hazard Type
-                            </label>
-
-                            <select id="hazardType"
-                                    name="hazardType"
-                                    required>
-
-                                <option value="">
-                                    Select type
-                                </option>
-
+                            <label for="hazardType">Hazard Type</label>
+                            <select id="hazardType" name="hazardType" required>
+                                <option value="">Select type</option>
                                 <%
-                                    for (String hazardType
-                                            : hazardTypes) {
+                                    for (String hazardType : hazardTypes) {
                                 %>
-
-                                    <option value="<%= HtmlUtil.escape(
-                                            hazardType
-                                    ) %>"
-                                        <%= hazardType.equals(
-                                                selectedHazardType
-                                        ) ? "selected" : "" %>>
-
-                                        <%= HtmlUtil.escape(
-                                                hazardType
-                                        ) %>
-
+                                    <option value="<%= HtmlUtil.escape(hazardType) %>" <%= hazardType.equals(selectedHazardType) ? "selected" : "" %>>
+                                        <%= HtmlUtil.escape(hazardType) %>
                                     </option>
-
                                 <%
                                     }
                                 %>
-
                             </select>
-
                         </div>
 
                         <div class="form-group">
-
-                            <label for="status">
-                                Status
-                            </label>
-
-                            <select id="status"
-                                    name="status"
-                                    required>
-
+                            <label for="status">Status</label>
+                            <select id="status" name="status" required>
                                 <%
-                                    for (String status
-                                            : statuses) {
+                                    for (String status : statuses) {
                                 %>
-
-                                    <option value="<%= HtmlUtil.escape(
-                                            status
-                                    ) %>"
-                                        <%= status.equals(
-                                                selectedStatus
-                                        ) ? "selected" : "" %>>
-
-                                        <%= HtmlUtil.escape(
-                                                status
-                                        ) %>
-
+                                    <option value="<%= HtmlUtil.escape(status) %>" <%= status.equals(selectedStatus) ? "selected" : "" %>>
+                                        <%= HtmlUtil.escape(status) %>
                                     </option>
-
                                 <%
                                     }
                                 %>
-
                             </select>
-
                         </div>
 
                         <div class="form-group">
-
-                            <label for="dateTime">
-                                Date &amp; Time
-                            </label>
-
+                            <label for="dateTime">Date &amp; Time</label>
                             <input id="dateTime"
                                    type="datetime-local"
                                    name="dateTime"
                                    required
-                                   value="<%= HtmlUtil.escape(
-                                           dateTimeValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(dateTimeValue) %>">
                         </div>
 
                         <div class="form-group">
-
-                            <label for="latitude">
-                                Latitude
-                            </label>
-
+                            <label for="latitude">Latitude</label>
                             <input id="latitude"
                                    type="number"
                                    name="latitude"
@@ -271,18 +159,11 @@
                                    min="-90"
                                    max="90"
                                    required
-                                   value="<%= HtmlUtil.escape(
-                                           latitudeValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(latitudeValue) %>">
                         </div>
 
                         <div class="form-group">
-
-                            <label for="longitude">
-                                Longitude
-                            </label>
-
+                            <label for="longitude">Longitude</label>
                             <input id="longitude"
                                    type="number"
                                    name="longitude"
@@ -290,77 +171,38 @@
                                    min="-180"
                                    max="180"
                                    required
-                                   value="<%= HtmlUtil.escape(
-                                           longitudeValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(longitudeValue) %>">
                         </div>
 
                         <div class="form-group full-span">
-
-                            <label for="description">
-                                Description
-                            </label>
-
-                            <textarea id="description"
-                                      name="description"
-                                      rows="5"
-                                      required><%= HtmlUtil.escape(
-                                              descriptionValue
-                                      ) %></textarea>
-
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="5" required><%= HtmlUtil.escape(descriptionValue) %></textarea>
                         </div>
 
                         <div class="form-group">
-
-                            <label for="userAgent">
-                                User Agent
-                            </label>
-
+                            <label for="userAgent">User Agent</label>
                             <input id="userAgent"
                                    type="text"
                                    name="userAgent"
                                    required
-                                   value="<%= HtmlUtil.escape(
-                                           userAgentValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(userAgentValue) %>">
                         </div>
 
                         <div class="form-group">
-
-                            <label for="imageUrl">
-                                Photo URL
-                            </label>
-
+                            <label for="imageUrl">Photo URL</label>
                             <input id="imageUrl"
                                    type="url"
                                    name="imageUrl"
                                    placeholder="https://..."
-                                   value="<%= HtmlUtil.escape(
-                                           imageUrlValue
-                                   ) %>">
-
+                                   value="<%= HtmlUtil.escape(imageUrlValue) %>">
                         </div>
 
                     </div>
 
                     <div class="form-actions">
-
-                        <a class="btn btn-outline"
-                           href="<%= contextPath %>/reports">
-
-                            Cancel
-
-                        </a>
-
-                        <button type="submit"
-                                class="btn btn-primary">
-
+                        <button type="submit" class="btn btn-success">
                             Create Report
-
                         </button>
-
                     </div>
 
                 </form>
@@ -368,8 +210,7 @@
             </div>
 
         </div>
-
-    </div>
+    </main>
 
 </div>
 

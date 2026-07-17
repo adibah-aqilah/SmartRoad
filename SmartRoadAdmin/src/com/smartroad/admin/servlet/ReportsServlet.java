@@ -19,216 +19,104 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/reports")
-public class ReportsServlet
-        extends HttpServlet {
+public class ReportsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String keyword =
-                clean(
-                        request.getParameter("keyword")
-                );
-
-        String hazardType =
-                clean(
-                        request.getParameter("hazardType")
-                );
-
-        String status =
-                clean(
-                        request.getParameter("status")
-                );
-
-        String reportDate =
-                clean(
-                        request.getParameter("reportDate")
-                );
+        String keyword = clean(request.getParameter("keyword"));
+        String hazardType = clean(request.getParameter("hazardType"));
+        String status = clean(request.getParameter("status"));
+        String reportDate = clean(request.getParameter("reportDate"));
 
         try {
-
-            List<HazardReport> reports =
-                    new HazardReportDAO()
-                            .getAllReports();
-
-            List<HazardReport> filtered =
-                    new ArrayList<>();
+            List<HazardReport> reports = new HazardReportDAO().getAllReports();
+            List<HazardReport> filtered = new ArrayList<>();
 
             for (HazardReport report : reports) {
-
-                if (!matchesKeyword(
-                        report,
-                        keyword)) {
-
+                if (!matchesKeyword(report, keyword)) {
                     continue;
                 }
-
-                if (hazardType != null &&
-                        !hazardType.equals(
-                                report.getHazardType())) {
-
+                if (hazardType != null && !hazardType.equals(report.getHazardType())) {
                     continue;
                 }
-
-                if (status != null &&
-                        !status.equals(
-                                report.getStatus())) {
-
+                if (status != null && !status.equals(report.getStatus())) {
                     continue;
                 }
-
-                if (!matchesDate(
-                        report,
-                        reportDate)) {
-
+                if (!matchesDate(report, reportDate)) {
                     continue;
                 }
-
                 filtered.add(report);
             }
 
-            request.setAttribute(
-                    "reports",
-                    filtered
-            );
+            request.setAttribute("reports", filtered);
+            request.setAttribute("keyword", keyword == null ? "" : keyword);
+            request.setAttribute("selectedHazardType", hazardType);
+            request.setAttribute("selectedStatus", status);
+            request.setAttribute("selectedReportDate", reportDate == null ? "" : reportDate);
 
-            request.setAttribute(
-                    "keyword",
-                    keyword == null ? "" : keyword
-            );
-
-            request.setAttribute(
-                    "selectedHazardType",
-                    hazardType
-            );
-
-            request.setAttribute(
-                    "selectedStatus",
-                    status
-            );
-
-            request.setAttribute(
-                    "selectedReportDate",
-                    reportDate == null
-                            ? ""
-                            : reportDate
-            );
-
-            request.getRequestDispatcher(
-                    "/reports.jsp"
-            ).forward(request, response);
+            request.getRequestDispatcher("/reports.jsp").forward(request, response);
 
         } catch (InterruptedException exception) {
-
             Thread.currentThread().interrupt();
-
-            throw new ServletException(
-                    "The Firestore request was interrupted.",
-                    exception
-            );
+            throw new ServletException("The Firestore request was interrupted.", exception);
 
         } catch (ExecutionException exception) {
-
-            throw new ServletException(
-                    "Unable to load hazard reports.",
-                    exception
-            );
+            throw new ServletException("Unable to load hazard reports.", exception);
         }
     }
 
-    private boolean matchesKeyword(
-            HazardReport report,
-            String keyword) {
-
+    private boolean matchesKeyword(HazardReport report, String keyword) {
         if (keyword == null) {
             return true;
         }
 
-        String value =
-                keyword.toLowerCase();
-
-        return contains(
-                report.getUsername(),
-                value
-        ) || contains(
-                report.getDescription(),
-                value
-        ) || contains(
-                report.getHazardType(),
-                value
-        );
+        String value = keyword.toLowerCase();
+        return contains(report.getUsername(), value)
+                || contains(report.getDescription(), value)
+                || contains(report.getHazardType(), value);
     }
 
-    private boolean matchesDate(
-            HazardReport report,
-            String dateFilter) {
-
+    private boolean matchesDate(HazardReport report, String dateFilter) {
         if (dateFilter == null) {
             return true;
         }
 
         try {
-
-            LocalDate expected =
-                    LocalDate.parse(dateFilter);
-
-            String[] patterns = {
-                    "dd/MM/yyyy HH:mm:ss",
-                    "dd/MM/yyyy HH:mm"
-            };
+            LocalDate expected = LocalDate.parse(dateFilter);
+            String[] patterns = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm"};
 
             for (String pattern : patterns) {
-
                 try {
-
-                    LocalDate actual =
-                            LocalDateTime.parse(
-                                    report.getDateTime(),
-                                    DateTimeFormatter
-                                            .ofPattern(pattern)
-                            ).toLocalDate();
+                    LocalDate actual = LocalDateTime.parse(
+                            report.getDateTime(),
+                            DateTimeFormatter.ofPattern(pattern)
+                    ).toLocalDate();
 
                     return expected.equals(actual);
-
                 } catch (DateTimeParseException ignored) {
                     // Try next format.
                 }
             }
-
             return false;
 
-        } catch (DateTimeParseException |
-                NullPointerException exception) {
-
+        } catch (DateTimeParseException | NullPointerException exception) {
             return false;
         }
     }
 
-    private boolean contains(
-            String source,
-            String expectedLowerCase) {
-
-        return source != null &&
-                source.toLowerCase()
-                        .contains(expectedLowerCase);
+    private boolean contains(String source, String expectedLowerCase) {
+        return source != null && source.toLowerCase().contains(expectedLowerCase);
     }
 
     private String clean(String value) {
-
         if (value == null) {
             return null;
         }
-
-        String trimmed =
-                value.trim();
-
-        return trimmed.isEmpty()
-                ? null
-                : trimmed;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

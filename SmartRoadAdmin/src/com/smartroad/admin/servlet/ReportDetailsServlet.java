@@ -13,142 +13,72 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/report")
-public class ReportDetailsServlet
-        extends HttpServlet {
+public class ReportDetailsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String id =
-                request.getParameter("id");
+        String id = request.getParameter("id");
 
         if (id == null || id.isBlank()) {
-
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Missing report ID."
-            );
-
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing report ID.");
             return;
         }
 
         try {
-
-            HazardReport report =
-                    new HazardReportDAO()
-                            .findById(id);
+            HazardReport report = new HazardReportDAO().findById(id);
 
             if (report == null) {
-
-                response.sendError(
-                        HttpServletResponse.SC_NOT_FOUND,
-                        "Hazard report not found."
-                );
-
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Hazard report not found.");
                 return;
             }
 
-            request.setAttribute(
-                    "report",
-                    report
-            );
-
-            request.getRequestDispatcher(
-                    "/reportDetails.jsp"
-            ).forward(request, response);
+            request.setAttribute("report", report);
+            request.getRequestDispatcher("/reportDetails.jsp").forward(request, response);
 
         } catch (InterruptedException exception) {
-
             Thread.currentThread().interrupt();
-
-            throw new ServletException(
-                    "The Firestore request was interrupted.",
-                    exception
-            );
+            throw new ServletException("The Firestore request was interrupted.", exception);
 
         } catch (ExecutionException exception) {
-
-            throw new ServletException(
-                    "Unable to load the hazard report.",
-                    exception
-            );
+            throw new ServletException("Unable to load the hazard report.", exception);
         }
     }
 
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String id =
-                request.getParameter("id");
-
-        String status =
-                request.getParameter("status");
+        String id = request.getParameter("id");
+        String status = request.getParameter("status");
 
         if (id == null || id.isBlank()) {
-
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Missing report ID."
-            );
-
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing report ID.");
             return;
         }
 
         try {
-
-            boolean updated =
-                    new HazardReportDAO()
-                            .updateStatus(
-                                    id,
-                                    status
-                            );
+            boolean updated = new HazardReportDAO().updateStatus(id, status);
 
             if (!updated) {
-
-                response.sendError(
-                        HttpServletResponse.SC_NOT_FOUND,
-                        "Hazard report not found."
-                );
-
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Hazard report not found.");
                 return;
             }
 
-            response.sendRedirect(
-                    request.getContextPath()
-                            + "/report?id="
-                            + id
-            );
+            response.sendRedirect(request.getContextPath() + "/report?id=" + id);
 
         } catch (IllegalArgumentException exception) {
-
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    exception.getMessage()
-            );
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
 
         } catch (InterruptedException exception) {
-
             Thread.currentThread().interrupt();
-
-            throw new ServletException(
-                    "The Firestore request was interrupted.",
-                    exception
-            );
+            throw new ServletException("The Firestore request was interrupted.", exception);
 
         } catch (ExecutionException exception) {
-
-            throw new ServletException(
-                    "Unable to update report status.",
-                    exception
-            );
+            throw new ServletException("Unable to update report status.", exception);
         }
     }
 }

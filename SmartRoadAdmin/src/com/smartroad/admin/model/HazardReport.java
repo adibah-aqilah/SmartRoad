@@ -101,84 +101,55 @@ public class HazardReport {
     }
 
     public String getShortId() {
-
         if (id == null) {
             return "";
         }
-
         if (id.length() <= 10) {
             return id;
         }
-
         return id.substring(0, 10) + "...";
     }
 
     public String getDateTimeInputValue() {
-
         if (dateTime == null || dateTime.isBlank()) {
             return "";
         }
 
-        DateTimeFormatter outputFormat =
-                DateTimeFormatter.ofPattern(
-                        "yyyy-MM-dd'T'HH:mm"
-                );
-
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String[] acceptedFormats = {
                 "dd/MM/yyyy HH:mm:ss",
                 "dd/MM/yyyy HH:mm"
         };
 
         for (String format : acceptedFormats) {
-
             try {
-
-                LocalDateTime parsedDate =
-                        LocalDateTime.parse(
-                                dateTime,
-                                DateTimeFormatter.ofPattern(
-                                        format
-                                )
-                        );
-
-                return parsedDate.format(
-                        outputFormat
-                );
-
+                LocalDateTime parsedDate = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(format));
+                return parsedDate.format(outputFormat);
             } catch (DateTimeParseException ignored) {
                 // Try the next accepted format.
             }
         }
-
         return "";
     }
 
     public String getHazardIcon() {
-
         if (hazardType == null) {
             return "\u26A0";
         }
 
         switch (hazardType) {
-
             case "Pothole":
                 return "\uD83D\uDD73";
-
             case "Flooding":
                 return "\uD83C\uDF0A";
-
             case "Fallen Tree":
                 return "\uD83C\uDF33";
-
             case "Traffic Accident":
                 return "\uD83D\uDE97";
-
             case "Damaged Road Sign":
                 return "\uD83D\uDEA7";
-
             case "Broken Traffic Light":
                 return "\uD83D\uDEA6";
-
             default:
                 return "\u26A0";
         }

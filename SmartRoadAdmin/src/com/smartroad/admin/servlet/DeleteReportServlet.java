@@ -12,66 +12,37 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/delete-report")
-public class DeleteReportServlet
-        extends HttpServlet {
+public class DeleteReportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String id =
-                request.getParameter("id");
+        String id = request.getParameter("id");
 
         if (id == null || id.isBlank()) {
-
-            response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Missing report ID."
-            );
-
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing report ID.");
             return;
         }
 
         try {
-
-            boolean deleted =
-                    new HazardReportDAO()
-                            .delete(id);
+            boolean deleted = new HazardReportDAO().delete(id);
 
             if (!deleted) {
-
-                response.sendError(
-                        HttpServletResponse.SC_NOT_FOUND,
-                        "Hazard report not found."
-                );
-
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Hazard report not found.");
                 return;
             }
 
-            response.sendRedirect(
-                    request.getContextPath()
-                            + "/reports"
-            );
+            response.sendRedirect(request.getContextPath() + "/reports");
 
         } catch (InterruptedException exception) {
-
             Thread.currentThread().interrupt();
-
-            throw new ServletException(
-                    "The Firestore request was interrupted.",
-                    exception
-            );
+            throw new ServletException("The Firestore request was interrupted.", exception);
 
         } catch (ExecutionException exception) {
-
-            throw new ServletException(
-                    "Unable to delete the hazard report.",
-                    exception
-            );
+            throw new ServletException("Unable to delete the hazard report.", exception);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.smartroad.admin.config;
 
 import java.io.IOException;
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
@@ -14,40 +13,27 @@ import com.google.firebase.cloud.FirestoreClient;
  */
 public final class FirebaseConfig {
 
-    private static final String PROJECT_ID =
-            "ict602-fc4bc";
+    private static final String PROJECT_ID = "ict602-fc4bc";
 
     private FirebaseConfig() {
         // Prevent this utility class from being instantiated.
     }
 
-    public static synchronized void initialize()
-            throws IOException {
-
+    public static synchronized void initialize() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-
-            FirebaseOptions options =
-                    FirebaseOptions.builder()
-                            .setCredentials(
-                                    GoogleCredentials
-                                            .getApplicationDefault()
-                            )
-                            .setProjectId(PROJECT_ID)
-                            .build();
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.getApplicationDefault())
+                    .setProjectId(PROJECT_ID)
+                    .build();
 
             FirebaseApp.initializeApp(options);
 
-            System.out.println(
-                    "SmartRoad Firebase initialised successfully."
-            );
+            System.out.println("SmartRoad Firebase initialised successfully.");
         }
     }
 
-    public static Firestore getFirestore()
-            throws IOException {
-
+    public static Firestore getFirestore() throws IOException {
         initialize();
-
         return FirestoreClient.getFirestore();
     }
 }
