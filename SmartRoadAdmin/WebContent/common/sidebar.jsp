@@ -52,19 +52,6 @@
 
         </li>
 
-        <li>
-
-            <a href="<%= sidebarContextPath %>/add-report"
-               class="<%= "add".equals(activePage)
-                       ? "active"
-                       : "" %>">
-
-                &#10133; Add Report
-
-            </a>
-
-        </li>
-
     </ul>
 
     <div class="sidebar-foot">

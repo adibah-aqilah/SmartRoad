@@ -73,7 +73,6 @@
 
     <main class="main">
 
-        <!-- Top navigation bar -->
         <header class="topbar">
 
             <h1>Hazard Reports</h1>
@@ -91,7 +90,6 @@
 
         <div class="content">
 
-            <!-- Page title and Add Report button -->
             <div class="page-actions">
 
                 <div>
@@ -99,8 +97,7 @@
                     <h2>Manage Reports</h2>
 
                     <p>
-                        View and manage hazard reports
-                        stored in Cloud Firestore.
+                        Search and manage road hazard reports.
                     </p>
 
                 </div>
@@ -115,18 +112,15 @@
 
             <section class="panel">
 
-                <!-- Search and filter form -->
                 <form class="filter-bar"
                       method="get"
                       action="<%= contextPath %>/reports">
 
-                    <!-- Search keyword -->
                     <input type="text"
                            name="keyword"
-                           placeholder="Search by username, hazard or description..."
+                           placeholder="Search reports..."
                            value="<%= HtmlUtil.escape(keyword) %>">
 
-                    <!-- Hazard type filter -->
                     <select name="hazardType">
 
                         <option value="">
@@ -162,14 +156,12 @@
 
                     </select>
 
-                    <!-- Date filter -->
                     <input type="date"
                            name="reportDate"
                            value="<%= HtmlUtil.escape(
                                    selectedReportDate
                            ) %>">
 
-                    <!-- Status filter -->
                     <select name="status">
 
                         <option value="">
@@ -216,7 +208,6 @@
 
                 </form>
 
-                <!-- Hazard reports table -->
                 <div class="table-scroll">
 
                     <table class="data-table">
@@ -225,11 +216,14 @@
 
                             <tr>
                                 <th>ID</th>
-                                <th>User</th>
-                                <th>Hazard Type</th>
+                                <th>Username</th>
                                 <th>Date &amp; Time</th>
-                                <th>Status</th>
+                                <th>User Agent</th>
+                                <th>Hazard Type</th>
+                                <th>Description</th>
                                 <th>Photo</th>
+                                <th>GPS Coordinates</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
 
@@ -259,11 +253,13 @@
                                         badgeClass =
                                                 "badge-resolved";
                                     }
+
+                                    String imageUrl =
+                                            report.getImageUrl();
                         %>
 
                             <tr>
 
-                                <!-- Firestore document ID -->
                                 <td title="<%= HtmlUtil.escape(
                                         report.getId()
                                 ) %>">
@@ -274,7 +270,6 @@
 
                                 </td>
 
-                                <!-- Username -->
                                 <td>
 
                                     @<%= HtmlUtil.escape(
@@ -283,7 +278,22 @@
 
                                 </td>
 
-                                <!-- Hazard type -->
+                                <td>
+
+                                    <%= HtmlUtil.escape(
+                                            report.getDateTime()
+                                    ) %>
+
+                                </td>
+
+                                <td>
+
+                                    <%= HtmlUtil.escape(
+                                            report.getUserAgent()
+                                    ) %>
+
+                                </td>
+
                                 <td>
 
                                     <span class="hazard-icon">
@@ -296,35 +306,17 @@
 
                                 </td>
 
-                                <!-- Date and time -->
                                 <td>
 
                                     <%= HtmlUtil.escape(
-                                            report.getDateTime()
+                                            report.getDescription()
                                     ) %>
 
                                 </td>
 
-                                <!-- Status -->
-                                <td>
-
-                                    <span class="badge <%= badgeClass %>">
-
-                                        <%= HtmlUtil.escape(
-                                                report.getStatus()
-                                        ) %>
-
-                                    </span>
-
-                                </td>
-
-                                <!-- Photo -->
                                 <td>
 
                                 <%
-                                    String imageUrl =
-                                            report.getImageUrl();
-
                                     if (imageUrl != null &&
                                             !imageUrl.isBlank()) {
                                 %>
@@ -357,10 +349,27 @@
 
                                 </td>
 
-                                <!-- Actions -->
+                                <td>
+
+                                    <%= report.getLatitude() %>,
+                                    <%= report.getLongitude() %>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="badge <%= badgeClass %>">
+
+                                        <%= HtmlUtil.escape(
+                                                report.getStatus()
+                                        ) %>
+
+                                    </span>
+
+                                </td>
+
                                 <td class="actions-cell">
 
-                                    <!-- View -->
                                     <a class="link-view"
                                        href="<%= contextPath %>/report?id=<%= HtmlUtil.escape(
                                                report.getId()
@@ -369,7 +378,6 @@
                                         View
                                     </a>
 
-                                    <!-- Edit -->
                                     <a class="link-view"
                                        href="<%= contextPath %>/edit-report?id=<%= HtmlUtil.escape(
                                                report.getId()
@@ -378,7 +386,6 @@
                                         Edit
                                     </a>
 
-                                    <!-- Delete using POST -->
                                     <form method="post"
                                           action="<%= contextPath %>/delete-report"
                                           onsubmit="return confirm('Delete this hazard report?');"
@@ -410,11 +417,11 @@
 
                             <tr>
 
-                                <td colspan="7"
+                                <td colspan="10"
                                     class="empty-state">
 
-                                    No reports match the
-                                    selected search or filters.
+                                    No reports match the selected
+                                    search or filters.
 
                                 </td>
 

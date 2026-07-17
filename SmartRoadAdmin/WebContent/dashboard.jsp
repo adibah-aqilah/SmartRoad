@@ -38,10 +38,9 @@
 
     <main class="main">
 
-        <!-- Top navigation bar -->
         <header class="topbar">
 
-            <h1>Dashboard</h1>
+            <h1>SmartRoad Admin Panel</h1>
 
             <div class="admin-chip">
 
@@ -56,29 +55,20 @@
 
         <div class="content">
 
-            <!-- Page title and Add Report button -->
             <div class="page-actions">
 
                 <div>
 
-                    <h2>System Overview</h2>
+                    <h2>Dashboard</h2>
 
                     <p>
-                        Live hazard report data from
-                        Cloud Firestore.
+                        Overview of road hazard reports.
                     </p>
 
                 </div>
 
-                <a class="btn btn-primary"
-                   href="<%= contextPath %>/add-report">
-
-                    + Add Report
-                </a>
-
             </div>
 
-            <!-- Dashboard statistics -->
             <div class="stat-grid">
 
                 <div class="stat-card">
@@ -133,7 +123,6 @@
 
             <hr class="road-divider">
 
-            <!-- Recent reports table -->
             <section class="panel">
 
                 <div class="panel-head">
@@ -151,7 +140,6 @@
                                 <th>Hazard</th>
                                 <th>Date &amp; Time</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
 
                         </thead>
@@ -185,9 +173,11 @@
                             <tr>
 
                                 <td>
+
                                     @<%= HtmlUtil.escape(
                                             report.getUsername()
                                     ) %>
+
                                 </td>
 
                                 <td>
@@ -203,9 +193,11 @@
                                 </td>
 
                                 <td>
+
                                     <%= HtmlUtil.escape(
                                             report.getDateTime()
                                     ) %>
+
                                 </td>
 
                                 <td>
@@ -220,18 +212,6 @@
 
                                 </td>
 
-                                <td>
-
-                                    <a class="link-view"
-                                       href="<%= contextPath %>/report?id=<%= HtmlUtil.escape(
-                                               report.getId()
-                                       ) %>">
-
-                                        View
-                                    </a>
-
-                                </td>
-
                             </tr>
 
                         <%
@@ -242,7 +222,7 @@
 
                             <tr>
 
-                                <td colspan="5"
+                                <td colspan="4"
                                     class="empty-state">
 
                                     No reports available.

@@ -40,9 +40,9 @@
 
     <jsp:include page="/common/sidebar.jsp" />
 
-    <div class="main">
+    <main class="main">
 
-        <div class="topbar">
+        <header class="topbar">
 
             <h1>Report Details</h1>
 
@@ -56,7 +56,7 @@
 
             </div>
 
-        </div>
+        </header>
 
         <div class="content">
 
@@ -82,22 +82,6 @@
 
                 String imageUrl =
                         report.getImageUrl();
-
-                String badgeClass =
-                        "badge-new";
-
-                if ("Under Investigation".equals(
-                        report.getStatus())) {
-
-                    badgeClass =
-                            "badge-investigating";
-
-                } else if ("Resolved".equals(
-                        report.getStatus())) {
-
-                    badgeClass =
-                            "badge-resolved";
-                }
         %>
 
             <a class="back-link"
@@ -112,29 +96,24 @@
                 <div>
 
                     <h2>
+
                         Report
                         <%= HtmlUtil.escape(
                                 report.getShortId()
                         ) %>
+
                     </h2>
 
                     <p>
-                        Firestore document ID:
+
+                        Report ID:
                         <%= HtmlUtil.escape(
                                 report.getId()
                         ) %>
+
                     </p>
 
                 </div>
-
-                <a class="btn btn-outline"
-                   href="<%= contextPath %>/edit-report?id=<%= HtmlUtil.escape(
-                           report.getId()
-                   ) %>">
-
-                    Edit Full Report
-
-                </a>
 
             </div>
 
@@ -147,7 +126,7 @@
                         <div class="detail-field">
 
                             <div class="f-label">
-                                Username
+                                User
                             </div>
 
                             <div class="f-value">
@@ -163,7 +142,7 @@
                         <div class="detail-field">
 
                             <div class="f-label">
-                                Hazard Type
+                                Hazard
                             </div>
 
                             <div class="f-value">
@@ -199,7 +178,7 @@
                         <div class="detail-field">
 
                             <div class="f-label">
-                                GPS Coordinates
+                                Coordinates
                             </div>
 
                             <div class="f-value">
@@ -214,7 +193,7 @@
                         <div class="detail-field">
 
                             <div class="f-label">
-                                Date &amp; Time Submitted
+                                Date &amp; Time
                             </div>
 
                             <div class="f-value">
@@ -243,26 +222,6 @@
 
                         </div>
 
-                        <div class="detail-field">
-
-                            <div class="f-label">
-                                Current Status
-                            </div>
-
-                            <div class="f-value">
-
-                                <span class="badge <%= badgeClass %>">
-
-                                    <%= HtmlUtil.escape(
-                                            report.getStatus()
-                                    ) %>
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
                     </div>
 
                     <div>
@@ -270,7 +229,7 @@
                         <div class="detail-field">
 
                             <div class="f-label">
-                                Photo Evidence
+                                Photo
                             </div>
 
                             <%
@@ -321,7 +280,7 @@
                             <div class="detail-field">
 
                                 <div class="f-label">
-                                    Update Status
+                                    Status
                                 </div>
 
                                 <select name="status"
@@ -362,28 +321,7 @@
                             <button type="submit"
                                     class="btn btn-primary">
 
-                                Update Status
-
-                            </button>
-
-                        </form>
-
-                        <br>
-
-                        <form method="post"
-                              action="<%= contextPath %>/delete-report"
-                              onsubmit="return confirm('Delete this hazard report?');">
-
-                            <input type="hidden"
-                                   name="id"
-                                   value="<%= HtmlUtil.escape(
-                                           report.getId()
-                                   ) %>">
-
-                            <button type="submit"
-                                    class="btn btn-danger">
-
-                                Delete Report
+                                Save
 
                             </button>
 
@@ -401,7 +339,7 @@
 
         </div>
 
-    </div>
+    </main>
 
 </div>
 
