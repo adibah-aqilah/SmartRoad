@@ -70,11 +70,11 @@ public class ProfileActivity extends AppCompatActivity {
                 tvProfileName.setText(
                         displayName
                 );
+
+                // LOAD STATISTICS for this specific user
+                loadStatistics(username);
             }
         }
-
-        // LOAD STATISTICS
-        loadStatistics();
 
         btnLogout.setOnClickListener(v -> {
 
@@ -96,9 +96,10 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void loadStatistics() {
+    private void loadStatistics(String username) {
 
         db.collection("hazards")
+                .whereEqualTo("username", username)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
 
