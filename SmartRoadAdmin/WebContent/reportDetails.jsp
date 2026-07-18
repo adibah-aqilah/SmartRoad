@@ -75,7 +75,7 @@
                     <div>
                         <div class="detail-field">
                             <div class="f-label">User</div>
-                            <div class="f-value">@<%= HtmlUtil.escape(report.getUsername()) %></div>
+                            <div class="f-value"><%= HtmlUtil.escape(report.getUsername()) %></div>
                         </div>
 
                         <div class="detail-field">

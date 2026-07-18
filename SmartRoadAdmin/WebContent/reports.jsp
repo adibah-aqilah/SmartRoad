@@ -146,7 +146,7 @@
                                 <td title="<%= HtmlUtil.escape(report.getId()) %>">
                                     <%= HtmlUtil.escape(report.getShortId()) %>
                                 </td>
-                                <td>@<%= HtmlUtil.escape(report.getUsername()) %></td>
+                                <td><%= HtmlUtil.escape(report.getUsername()) %></td>
                                 <td><%= HtmlUtil.escape(report.getDateTime()) %></td>
                                 <td><%= HtmlUtil.escape(report.getUserAgent()) %></td>
                                 <td>
