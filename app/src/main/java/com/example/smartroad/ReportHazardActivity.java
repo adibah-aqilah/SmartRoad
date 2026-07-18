@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -24,8 +25,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -50,8 +50,7 @@ public class ReportHazardActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private Bitmap photoBitmap;
     private FirebaseFirestore db;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
+
     private String reporterName = "Anonymous";
 
     @Override
@@ -60,8 +59,6 @@ public class ReportHazardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report_hazard);
 
         db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
         fetchUserData();
 
         spinnerHazardType = findViewById(R.id.spinnerHazardType);
@@ -164,69 +161,120 @@ public class ReportHazardActivity extends AppCompatActivity {
         btnSubmitReport.setEnabled(false);
         btnSubmitReport.setText("Uploading...");
 
-        String fileName = "hazard_" + System.currentTimeMillis() + ".jpg";
-        StorageReference fileRef = storageRef.child("hazards/" + fileName);
+        createBase64AndSave(selectedHazard, description);
+    }
 
-        if (selectedImageUri != null) {
-            uploadFromUri(selectedImageUri, fileRef, selectedHazard, description);
-        } else if (photoBitmap != null) {
-            uploadFromBitmap(photoBitmap, fileRef, selectedHazard, description);
+    private void createBase64AndSave(String hazardType,
+                                     String description) {
+
+        try {
+
+            Bitmap bitmap;
+
+            if (photoBitmap != null) {
+
+                bitmap = photoBitmap;
+
+            } else {
+
+                bitmap = MediaStore.Images.Media.getBitmap(
+                        getContentResolver(),
+                        selectedImageUri
+                );
+            }
+
+            ByteArrayOutputStream baos =
+                    new ByteArrayOutputStream();
+
+            bitmap.compress(
+                    Bitmap.CompressFormat.JPEG,
+                    60,
+                    baos
+            );
+
+            byte[] imageBytes =
+                    baos.toByteArray();
+
+            String imageBase64 =
+                    Base64.encodeToString(
+                            imageBytes,
+                            Base64.DEFAULT
+                    );
+
+            saveToFirestore(
+                    imageBase64,
+                    hazardType,
+                    description
+            );
+
+        } catch (Exception e) {
+
+            btnSubmitReport.setEnabled(true);
+            btnSubmitReport.setText("Submit Report");
+
+            Toast.makeText(
+                    this,
+                    e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
         }
     }
 
-    private void uploadFromUri(Uri uri, StorageReference fileRef, String hazardType, String description) {
-        fileRef.putFile(uri).addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                saveToFirestore(downloadUri.toString(), hazardType, description);
-            });
-        }).addOnFailureListener(e -> {
-            btnSubmitReport.setEnabled(true);
-            btnSubmitReport.setText("Submit Report");
-            Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-    }
+    private void saveToFirestore(String imageBase64,
+                                 String hazardType,
+                                 String description) {
 
-    private void uploadFromBitmap(Bitmap bitmap, StorageReference fileRef, String hazardType, String description) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-        byte[] data = baos.toByteArray();
-
-        fileRef.putBytes(data).addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                saveToFirestore(downloadUri.toString(), hazardType, description);
-            });
-        }).addOnFailureListener(e -> {
-            btnSubmitReport.setEnabled(true);
-            btnSubmitReport.setText("Submit Report");
-            Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void saveToFirestore(String imageUrl, String hazardType, String description) {
-        String userAgent = android.os.Build.MANUFACTURER + " " +
-                android.os.Build.MODEL + " (Android " +
-                android.os.Build.VERSION.RELEASE + ")";
+        String userAgent =
+                android.os.Build.MANUFACTURER + " " +
+                        android.os.Build.MODEL +
+                        " (Android " +
+                        android.os.Build.VERSION.RELEASE +
+                        ")";
 
         Map<String, Object> hazard = new HashMap<>();
+
         hazard.put("hazardType", hazardType);
         hazard.put("description", description);
-        hazard.put("latitude", getIntent().getDoubleExtra("LAT", 0));
-        hazard.put("longitude", getIntent().getDoubleExtra("LNG", 0));
-        hazard.put("reporter", reporterName);
+        hazard.put("latitude",
+                getIntent().getDoubleExtra("LAT", 0));
+        hazard.put("longitude",
+                getIntent().getDoubleExtra("LNG", 0));
+        hazard.put("username", reporterName);
         hazard.put("status", "New");
-        hazard.put("dateTime", tvAutoDateTime.getText().toString().replace("Captured: ", ""));
-        hazard.put("imageUrl", imageUrl);
+        hazard.put(
+                "dateTime",
+                tvAutoDateTime.getText()
+                        .toString()
+                        .replace("Captured: ", "")
+        );
+
+        hazard.put("imageBase64", imageBase64);
         hazard.put("userAgent", userAgent);
 
-        db.collection("hazards").add(hazard)
+        db.collection("hazards")
+                .add(hazard)
                 .addOnSuccessListener(doc -> {
-                    Toast.makeText(this, "Report Submitted Successfully", Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(
+                            this,
+                            "Report Submitted Successfully",
+                            Toast.LENGTH_LONG
+                    ).show();
+
                     finish();
+
                 })
                 .addOnFailureListener(e -> {
+
                     btnSubmitReport.setEnabled(true);
                     btnSubmitReport.setText("Submit Report");
-                    Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(
+                            this,
+                            "Firestore Error: "
+                                    + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
                 });
     }
 }

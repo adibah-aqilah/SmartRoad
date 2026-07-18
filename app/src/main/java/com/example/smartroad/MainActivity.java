@@ -219,10 +219,8 @@ public class MainActivity extends AppCompatActivity
                         );
 
                         intent.putExtra(
-                                "REPORTER",
-                                document.getString(
-                                        "username"
-                                )
+                                "USERNAME",
+                                document.getString("username")
                         );
 
                         intent.putExtra(
@@ -232,17 +230,10 @@ public class MainActivity extends AppCompatActivity
                                 )
                         );
 
-                        intent.putExtra(
-                                "IMAGE_URL",
-                                document.getString(
-                                        "imageUrl"
-                                )
-                        );
+
                         intent.putExtra(
                                 "IMAGE_BASE64",
-                                document.getString(
-                                        "imageBase64"
-                                )
+                                document.getString("imageBase64")
                         );
 
 

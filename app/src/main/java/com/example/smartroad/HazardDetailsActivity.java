@@ -43,9 +43,8 @@ public class HazardDetailsActivity extends AppCompatActivity {
         String status = getIntent().getStringExtra("STATUS");
         String description = getIntent().getStringExtra("DESCRIPTION");
         String location = getIntent().getStringExtra("LOCATION");
-        String reporter = getIntent().getStringExtra("REPORTER");
+        String reporter = getIntent().getStringExtra("USERNAME");
         String dateTime = getIntent().getStringExtra("DATE_TIME");
-        String imageUrl = getIntent().getStringExtra("IMAGE_URL");
         String imageBase64 =
                 getIntent().getStringExtra("IMAGE_BASE64");
 
