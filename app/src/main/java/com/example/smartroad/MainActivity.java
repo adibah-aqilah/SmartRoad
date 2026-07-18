@@ -179,82 +179,13 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
 
-            String documentId =
-                    (String) marker.getTag();
+            String documentId = (String) marker.getTag();
 
-            if (documentId == null) {
-                return true;
+            if (documentId != null) {
+                Intent intent = new Intent(MainActivity.this, HazardDetailsActivity.class);
+                intent.putExtra("DOCUMENT_ID", documentId);
+                startActivity(intent);
             }
-
-            db.collection("hazards")
-                    .document(documentId)
-                    .get()
-                    .addOnSuccessListener(document -> {
-
-                        Intent intent =
-                                new Intent(
-                                        MainActivity.this,
-                                        HazardDetailsActivity.class
-                                );
-
-                        intent.putExtra(
-                                "TYPE",
-                                document.getString(
-                                        "hazardType"
-                                )
-                        );
-
-                        intent.putExtra(
-                                "STATUS",
-                                document.getString(
-                                        "status"
-                                )
-                        );
-
-                        intent.putExtra(
-                                "DESCRIPTION",
-                                document.getString(
-                                        "description"
-                                )
-                        );
-
-                        intent.putExtra(
-                                "USERNAME",
-                                document.getString("username")
-                        );
-
-                        intent.putExtra(
-                                "DATE_TIME",
-                                document.getString(
-                                        "dateTime"
-                                )
-                        );
-
-
-                        intent.putExtra(
-                                "IMAGE_BASE64",
-                                document.getString("imageBase64")
-                        );
-
-
-                        Double lat =
-                                document.getDouble(
-                                        "latitude"
-                                );
-
-                        Double lng =
-                                document.getDouble(
-                                        "longitude"
-                                );
-
-                        intent.putExtra(
-                                "LOCATION",
-                                lat + ", " + lng
-                        );
-
-                        startActivity(intent);
-
-                    });
 
             return true;
         });

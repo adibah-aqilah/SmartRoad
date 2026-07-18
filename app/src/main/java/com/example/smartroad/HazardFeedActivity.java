@@ -92,12 +92,7 @@ public class HazardFeedActivity extends AppCompatActivity {
 
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(HazardFeedActivity.this, HazardDetailsActivity.class);
-                intent.putExtra("TYPE", (String) hazard.get("hazardType"));
-                intent.putExtra("STATUS", (String) hazard.get("status"));
-                intent.putExtra("DESCRIPTION", (String) hazard.get("description"));
-                intent.putExtra("REPORTER", (String) hazard.get("reporter"));
-                intent.putExtra("IMAGE_URL", imageUrl);
-                intent.putExtra("LOCATION", lat + ", " + lng);
+                intent.putExtra("DOCUMENT_ID", (String) hazard.get("id"));
                 startActivity(intent);
             });
         }
