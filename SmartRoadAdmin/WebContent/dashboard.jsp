@@ -5,7 +5,6 @@
 
 <%
     request.setAttribute("activePage", "dashboard");
-
     List<HazardReport> recentReports = (List<HazardReport>) request.getAttribute("recentReports");
     String contextPath = request.getContextPath();
 %>
@@ -21,11 +20,9 @@
 <body>
 
 <div class="app-shell">
-
     <jsp:include page="/common/sidebar.jsp" />
 
     <main class="main">
-
         <header class="topbar">
             <h1>SmartRoad Admin Panel</h1>
             <div class="admin-chip">
@@ -35,7 +32,6 @@
         </header>
 
         <div class="content">
-
             <div class="page-actions">
                 <div>
                     <h2>Dashboard</h2>
@@ -44,7 +40,6 @@
             </div>
 
             <div class="stat-grid">
-
                 <div class="stat-card">
                     <div class="label">Total Users</div>
                     <div class="value">${totalUsers}</div>
@@ -64,15 +59,12 @@
                     <div class="label">Resolved Reports</div>
                     <div class="value">${resolvedReports}</div>
                 </div>
-
             </div>
 
             <hr class="road-divider">
 
             <section class="panel">
-
                 <div class="panel-head">Recent Reports</div>
-
                 <div class="table-scroll">
                     <table class="data-table">
                         <thead>
@@ -114,12 +106,9 @@
                         </tbody>
                     </table>
                 </div>
-
             </section>
-
         </div>
     </main>
-
 </div>
 
 </body>
