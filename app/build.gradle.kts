@@ -48,6 +48,8 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
 
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -55,6 +57,7 @@ dependencies {
     implementation(libs.constraintlayout)
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     implementation(
         "com.google.android.gms:play-services-maps:19.2.0"
@@ -63,6 +66,8 @@ dependencies {
     implementation(
         "com.google.android.gms:play-services-location:21.4.0"
     )
+
+    implementation("com.google.firebase:firebase-storage")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@drawable/background"
     android:padding="24dp">
 
+    <!-- Header Section (Logo & App Title) -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="64dp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/loginCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.65"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <!-- Logo Badge -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/smartroad_logo"
+            android:scaleType="centerInside"
+            android:background="@android:color/white"
+            android:padding="8dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/white"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            android:contentDescription="SmartRoad Logo"
+            android:elevation="8dp" />
 
         <TextView
             android:id="@+id/tvAppTitle"
@@ -22,29 +44,38 @@
             android:layout_height="wrap_content"
             android:text="SmartRoad"
             android:textColor="@color/primary_road"
-            android:textSize="36sp"
+            android:textSize="32sp"
+            android:fontFamily="sans-serif-black"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvAppSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Crowdsourced Road Hazard Reporting"
             android:textColor="@color/primary_road"
-            android:alpha="0.7"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Login Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/loginCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
         app:strokeWidth="1dp"
-        app:strokeColor="#E5E7EB"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        app:strokeColor="#F3F4F6"
+        app:cardBackgroundColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@+id/layoutSignUpLink"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,39 +85,54 @@
 
             <!-- Email Input -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEmail"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Email Address"
-                app:startIconDrawable="@android:drawable/ic_dialog_email"
-                app:startIconTint="@color/primary_road"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:startIconTint="@color/status_investigating"
+                app:boxStrokeColor="@color/status_investigating"
+                app:hintTextColor="@color/status_investigating"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="44dp"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:textColor="#1F2937"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password Input -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:hint="Password"
                 app:passwordToggleEnabled="true"
-                app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
-                app:startIconTint="@color/primary_road"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:passwordToggleTint="@color/status_investigating"
+                app:startIconTint="@color/status_investigating"
+                app:boxStrokeColor="@color/status_investigating"
+                app:hintTextColor="@color/status_investigating"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="44dp"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="#1F2937"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Sign In Button -->
@@ -99,52 +145,45 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"
-                android:backgroundTint="@color/primary_road"
-                android:textColor="@color/white" />
+                android:backgroundTint="@color/status_investigating"
+                android:textColor="@color/white"
+                android:stateListAnimator="@null"
+                app:elevation="4dp" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/tvOr"
+    <!-- Sign Up Link -->
+    <LinearLayout
+        android:id="@+id/layoutSignUpLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="OR"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loginCard" />
-
-    <!-- Google Sign In Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGoogleSignIn"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="24dp"
-        android:text="Continue with Google"
-        android:textAllCaps="false"
-        android:textColor="@color/primary_road"
-        app:cornerRadius="12dp"
-        app:strokeColor="@color/primary_road"
-        app:icon="@android:drawable/ic_menu_compass"
-        app:iconGravity="textStart"
-        app:layout_constraintTop_toBottomOf="@id/tvOr" />
-
-    <TextView
-        android:id="@+id/tvSignUpLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Don't have an account? Sign Up"
-        android:textColor="@color/accent_warning"
-        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/loginCard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? "
+            android:textColor="@color/primary_road"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSignUpLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Sign Up"
+            android:textColor="@color/status_investigating"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

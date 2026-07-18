@@ -84,7 +84,7 @@ public class HazardReportDAO {
             return false;
         }
 
-        document.set(toMap(report)).get();
+        document.update(toMap(report)).get();
         return true;
     }
 
@@ -137,7 +137,27 @@ public class HazardReportDAO {
         report.setLongitude(getDouble(document, "longitude"));
         report.setDateTime(firstNonBlank(getString(document, "dateTime"), "Not available"));
         report.setUserAgent(firstNonBlank(getString(document, "userAgent"), "Not available"));
-        report.setImageUrl(getString(document, "imageUrl"));
+        String imageUrl = getString(document, "imageUrl");
+
+        if (imageUrl != null) {
+            String normalisedUrl = imageUrl.trim().toLowerCase();
+
+            if (normalisedUrl.startsWith("https://") || normalisedUrl.startsWith("http://")) {
+                report.setImageUrl(imageUrl.trim());
+            } else {
+                /*
+                 * Ignore content:// and file:// because they only work on the Android device.
+                 */
+                report.setImageUrl(null);
+            }
+        }
+
+        report.setImageBase64(
+                firstNonBlank(
+                        getString(document, "imageBase64"),
+                        getString(document, "photoBase64")
+                )
+        );
 
         return report;
     }

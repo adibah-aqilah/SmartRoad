@@ -87,7 +87,11 @@
                                     <%= HtmlUtil.escape(report.getHazardType()) %>
                                 </td>
                                 <td><%= HtmlUtil.escape(report.getDateTime()) %></td>
-                                <td><%= HtmlUtil.escape(report.getStatus()) %></td>
+                                <td>
+                                    <span>
+                                        <%= HtmlUtil.escape(report.getStatus()) %>
+                                    </span>
+                                </td>
                             </tr>
                         <%
                                 }

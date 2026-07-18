@@ -10,6 +10,7 @@
     <!-- We use different luminosities and tints to ensure they aren't just distinguishable by hue -->
     <color name="status_new">#D55E00</color>          <!-- Vermillion (Accessible alternative to Red) -->
     <color name="status_investigating">#0072B2</color> <!-- Deep Blue (Universal safe color) -->
+    <color name="primary_blue_light">#47A1FF</color>   <!-- Lighter blue for gradients -->
     <color name="status_resolved">#009E73</color>      <!-- Bluish Green (Distinguishable from Vermillion) -->
 
     <!-- Neutral Shades for Borders and Cards -->

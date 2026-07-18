@@ -139,8 +139,6 @@
                                     } else if ("Resolved".equals(report.getStatus())) {
                                         badgeClass = "badge-resolved";
                                     }
-
-                                    String imageUrl = report.getImageUrl();
                         %>
                             <tr>
                                 <td title="<%= HtmlUtil.escape(report.getId()) %>">
@@ -154,21 +152,23 @@
                                     <%= HtmlUtil.escape(report.getHazardType()) %>
                                 </td>
                                 <td><%= HtmlUtil.escape(report.getDescription()) %></td>
+                                
                                 <td>
-                                <%
-                                    if (imageUrl != null && !imageUrl.isBlank()) {
-                                %>
-                                    <a href="<%= HtmlUtil.escape(imageUrl) %>" target="_blank" rel="noopener noreferrer">
-                                        <img class="photo-thumb" src="<%= HtmlUtil.escape(imageUrl) %>" alt="Hazard photo">
-                                    </a>
-                                <%
-                                    } else {
-                                %>
-                                    <span class="empty-photo">No photo</span>
-                                <%
-                                    }
-                                %>
-                                </td>
+								<%
+								    if (report.hasPhoto()) {
+								%>
+								    <a href="<%= contextPath %>/report?id=<%= HtmlUtil.escape(report.getId()) %>">
+								        <img class="photo-thumb" src="<%= contextPath %>/report-photo?id=<%= HtmlUtil.escape(report.getId()) %>" alt="Hazard photo">
+								    </a>
+								<%
+								    } else {
+								%>
+								    <span class="empty-photo">No photo</span>
+								<%
+								    }
+								%>
+								</td>
+                                
                                 <td><%= report.getLatitude() %>, <%= report.getLongitude() %></td>
                                 <td class="status-column">
                                     <span class="badge <%= badgeClass %>">
