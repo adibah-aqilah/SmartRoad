@@ -1,3 +1,4 @@
+com\smartroad\admin\servlet\ReportPhotoServlet.class
 com\smartroad\admin\servlet\EditReportServlet.class
 com\smartroad\admin\servlet\ReportDetailsServlet.class
 com\smartroad\admin\config\FirebaseConfig.class

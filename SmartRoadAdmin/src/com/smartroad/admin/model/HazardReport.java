@@ -16,6 +16,7 @@ public class HazardReport {
     private String dateTime;
     private String userAgent;
     private String imageUrl;
+    private String imageBase64;
 
     public HazardReport() {
     }
@@ -98,6 +99,27 @@ public class HazardReport {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
+    public boolean hasPhoto() {
+        if (imageBase64 != null && !imageBase64.isBlank()) {
+            return true;
+        }
+
+        if (imageUrl == null || imageUrl.isBlank()) {
+            return false;
+        }
+
+        String value = imageUrl.trim().toLowerCase();
+        return value.startsWith("https://") || value.startsWith("http://");
     }
 
     public String getShortId() {
