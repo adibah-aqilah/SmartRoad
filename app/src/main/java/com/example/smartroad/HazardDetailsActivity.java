@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +18,7 @@ public class HazardDetailsActivity extends AppCompatActivity {
     private TextView tvHazardType;
     private TextView tvHazardDescription;
     private TextView tvDetailLocation;
+    private TextView tvDetailTime;
     private TextView tvReporterName;
 
     private ImageView ivHazardPhoto;
@@ -28,67 +32,56 @@ public class HazardDetailsActivity extends AppCompatActivity {
         tvHazardType = findViewById(R.id.tvHazardType);
         tvHazardDescription = findViewById(R.id.tvHazardDescription);
         tvDetailLocation = findViewById(R.id.tvDetailLocation);
+        tvDetailTime = findViewById(R.id.tvDetailTime);
         tvReporterName = findViewById(R.id.tvReporterName);
+
+        ivHazardPhoto = findViewById(R.id.ivHazardImage);
 
         Button btnBack = findViewById(R.id.btnBack);
 
-        String type =
-                getIntent().getStringExtra("TYPE");
+        String type = getIntent().getStringExtra("TYPE");
+        String status = getIntent().getStringExtra("STATUS");
+        String description = getIntent().getStringExtra("DESCRIPTION");
+        String location = getIntent().getStringExtra("LOCATION");
+        String reporter = getIntent().getStringExtra("REPORTER");
+        String dateTime = getIntent().getStringExtra("DATE_TIME");
+        String imageUrl = getIntent().getStringExtra("IMAGE_URL");
+        String imageBase64 =
+                getIntent().getStringExtra("IMAGE_BASE64");
 
-        String status =
-                getIntent().getStringExtra("STATUS");
-
-        String description =
-                getIntent().getStringExtra("DESCRIPTION");
-
-        String location =
-                getIntent().getStringExtra("LOCATION");
-
-        String reporter =
-                getIntent().getStringExtra("REPORTER");
-
-        String imageUrl =
-                getIntent().getStringExtra("IMAGE_URL");
-
-        if (type == null) {
-            type = "Unknown Hazard";
-        }
-
-        if (status == null) {
-            status = "New";
-        }
-
-        if (description == null) {
-            description = "No description available";
-        }
-
-        if (location == null) {
-            location = "Location not available";
-        }
-
-        if (reporter == null) {
-            reporter = "Unknown Reporter";
-        }
+        if (type == null) type = "Unknown Hazard";
+        if (status == null) status = "New";
+        if (description == null) description = "No description available";
+        if (location == null) location = "Location not available";
+        if (reporter == null) reporter = "Unknown Reporter";
+        if (dateTime == null) dateTime = "Unknown Date";
 
         tvHazardType.setText(type);
-
-        tvStatus.setText(
-                "STATUS: " + status
-        );
-
-        tvHazardDescription.setText(
-                description
-        );
-
-        tvDetailLocation.setText(
-                "Location: " + location
-        );
-
-        tvReporterName.setText(
-                "Reported By: " + reporter
-        );
+        tvStatus.setText("STATUS: " + status);
+        tvHazardDescription.setText(description);
+        tvDetailLocation.setText("Location: " + location);
+        tvDetailTime.setText("Reported: " + dateTime);
+        tvReporterName.setText("Reported By: " + reporter);
 
 
+        if (imageBase64 != null &&
+                !imageBase64.isEmpty()) {
+
+            byte[] decodedBytes =
+                    Base64.decode(
+                            imageBase64,
+                            Base64.DEFAULT
+                    );
+
+            Bitmap bitmap =
+                    BitmapFactory.decodeByteArray(
+                            decodedBytes,
+                            0,
+                            decodedBytes.length
+                    );
+
+            ivHazardPhoto.setImageBitmap(bitmap);
+        }
 
         btnBack.setOnClickListener(v -> finish());
     }

@@ -10,18 +10,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Base64;
+import java.io.ByteArrayOutputStream;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+
 
 public class ReportHazardActivity extends AppCompatActivity {
 
@@ -161,6 +165,19 @@ public class ReportHazardActivity extends AppCompatActivity {
                 return;
             }
 
+            String userAgent =
+                    android.os.Build.MANUFACTURER + " " +
+                            android.os.Build.MODEL +
+                            " (Android " +
+                            android.os.Build.VERSION.RELEASE + ")";
+
+
+            String email = FirebaseAuth.getInstance()
+                    .getCurrentUser()
+                    .getEmail();
+
+            String username = email.split("@")[0];
+
             Map<String, Object> hazard =
                     new HashMap<>();
 
@@ -185,8 +202,8 @@ public class ReportHazardActivity extends AppCompatActivity {
             );
 
             hazard.put(
-                    "reporter",
-                    "Ayla"
+                    "username",
+                    username
             );
 
             hazard.put(
@@ -197,6 +214,43 @@ public class ReportHazardActivity extends AppCompatActivity {
             hazard.put(
                     "dateTime",
                     currentDate
+            );
+
+            hazard.put(
+                    "userAgent",
+                    userAgent
+            );
+
+            hazard.put(
+                    "imageUrl",
+                    selectedImageUri.toString()
+            );
+
+            Bitmap bitmap =
+                    ((BitmapDrawable) ivPhotoPreview.getDrawable())
+                            .getBitmap();
+
+            ByteArrayOutputStream baos =
+                    new ByteArrayOutputStream();
+
+            bitmap.compress(
+                    Bitmap.CompressFormat.JPEG,
+                    50,
+                    baos
+            );
+
+            byte[] imageBytes =
+                    baos.toByteArray();
+
+            String encodedImage =
+                    Base64.encodeToString(
+                            imageBytes,
+                            Base64.DEFAULT
+                    );
+
+            hazard.put(
+                    "imageBase64",
+                    encodedImage
             );
 
             db.collection("hazards")
@@ -219,6 +273,7 @@ public class ReportHazardActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG
                         ).show();
                     });
+
         });
     }
 
