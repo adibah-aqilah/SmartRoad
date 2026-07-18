@@ -46,7 +46,6 @@
             </a>
         <%
             } else {
-                String imageUrl = report.getImageUrl();
                 String badgeClass = "badge-new";
 
                 if ("Under Investigation".equals(report.getStatus())) {
@@ -75,7 +74,7 @@
                     <div>
                         <div class="detail-field">
                             <div class="f-label">User</div>
-                            <div class="f-value">@<%= HtmlUtil.escape(report.getUsername()) %></div>
+                            <div class="f-value"><%= HtmlUtil.escape(report.getUsername()) %></div>
                         </div>
 
                         <div class="detail-field">
@@ -118,23 +117,23 @@
 
                     <div>
                         <div class="detail-field">
-                            <div class="f-label">Photo</div>
-                            <%
-                                if (imageUrl != null && !imageUrl.isBlank()) {
-                            %>
-                                <a href="<%= HtmlUtil.escape(imageUrl) %>" target="_blank" rel="noopener noreferrer">
-                                    <img class="photo-large" src="<%= HtmlUtil.escape(imageUrl) %>" alt="Hazard photo">
-                                </a>
-                            <%
-                                } else {
-                            %>
-                                <div class="photo-box">
-                                    No photo is available for this report.
-                                </div>
-                            <%
-                                }
-                            %>
-                        </div>
+						    <div class="f-label">Photo</div>
+						<%
+						    if (report.hasPhoto()) {
+						%>
+						    <a href="<%= contextPath %>/report-photo?id=<%= HtmlUtil.escape(report.getId()) %>" target="_blank" rel="noopener noreferrer">
+						        <img class="photo-large" src="<%= contextPath %>/report-photo?id=<%= HtmlUtil.escape(report.getId()) %>" alt="Hazard photo">
+						    </a>
+						<%
+						    } else {
+						%>
+						    <div class="photo-box">
+						        No photo is available for this report.
+						    </div>
+						<%
+						    }
+						%>
+						</div>
                     </div>
                 </div>
             </div>

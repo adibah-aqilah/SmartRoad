@@ -87,13 +87,6 @@
                         <%
                             if (recentReports != null && !recentReports.isEmpty()) {
                                 for (HazardReport report : recentReports) {
-                                    String badgeClass = "badge-new";
-
-                                    if ("Under Investigation".equals(report.getStatus())) {
-                                        badgeClass = "badge-investigating";
-                                    } else if ("Resolved".equals(report.getStatus())) {
-                                        badgeClass = "badge-resolved";
-                                    }
                         %>
                             <tr>
                                 <td>@<%= HtmlUtil.escape(report.getUsername()) %></td>
@@ -103,7 +96,7 @@
                                 </td>
                                 <td><%= HtmlUtil.escape(report.getDateTime()) %></td>
                                 <td>
-                                    <span class="badge <%= badgeClass %>">
+                                    <span>
                                         <%= HtmlUtil.escape(report.getStatus()) %>
                                     </span>
                                 </td>
