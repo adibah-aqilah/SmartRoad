@@ -87,17 +87,36 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Upload Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnUploadPhoto"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <!-- Photo Selection Buttons -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Add Photo Evidence *"
-            android:textAllCaps="false"
-            app:icon="@android:drawable/ic_menu_camera"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCamera"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Camera"
+                android:textAllCaps="false"
+                app:icon="@android:drawable/ic_menu_camera"
+                app:cornerRadius="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGallery"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="Gallery"
+                android:textAllCaps="false"
+                app:icon="@android:drawable/ic_menu_gallery"
+                app:cornerRadius="12dp"/>
+        </LinearLayout>
 
         <!-- Image Preview -->
         <ImageView

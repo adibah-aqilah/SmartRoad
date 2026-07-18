@@ -12,11 +12,18 @@
         android:padding="24dp"
         android:gravity="center_horizontal">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/smartroad_logo"
+            android:background="@android:color/white"
+            android:padding="6dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/white"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            android:elevation="4dp"
+            android:contentDescription="SmartRoad Logo" />
 
         <TextView
             android:layout_width="wrap_content"

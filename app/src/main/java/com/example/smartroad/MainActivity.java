@@ -335,55 +335,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getCurrentLocation() {
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    100
-            );
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
             return;
         }
 
         mMap.setMyLocationEnabled(true);
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(location -> {
+        // Fetching more accurate/current location using requestLocationUpdates would be better, 
+        // but for now let's ensure getLastLocation is used robustly.
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                
+                // Only move camera and add "You Are Here" marker if we haven't selected a spot yet
+                if (selectedLat == 0 && selectedLng == 0) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(currentLocation)
+                            .title("You Are Here")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-                    if (location != null) {
-
-                        LatLng currentLocation =
-                                new LatLng(
-                                        location.getLatitude(),
-                                        location.getLongitude()
-                                );
-
-                        mMap.addMarker(
-                                new MarkerOptions()
-                                        .position(currentLocation)
-                                        .title("You Are Here")
-                                        .icon(
-                                                BitmapDescriptorFactory.defaultMarker(
-                                                        BitmapDescriptorFactory.HUE_AZURE
-                                                )
-                                        )
-                        );
-
-                        mMap.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                        currentLocation,
-                                        16f
-                                )
-                        );
-                    }
-                });
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16f));
+                }
+            } else {
+                // If last location is null, we can try to get the current location explicitly
+                // Toast.makeText(this, "Unable to get current location. Ensure GPS is ON.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
