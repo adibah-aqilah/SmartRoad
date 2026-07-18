@@ -221,7 +221,14 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra(
                                 "REPORTER",
                                 document.getString(
-                                        "reporter"
+                                        "username"
+                                )
+                        );
+
+                        intent.putExtra(
+                                "DATE_TIME",
+                                document.getString(
+                                        "dateTime"
                                 )
                         );
 
@@ -231,6 +238,13 @@ public class MainActivity extends AppCompatActivity
                                         "imageUrl"
                                 )
                         );
+                        intent.putExtra(
+                                "IMAGE_BASE64",
+                                document.getString(
+                                        "imageBase64"
+                                )
+                        );
+
 
                         Double lat =
                                 document.getDouble(

@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -141,12 +140,12 @@ public class ReportHazardActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
                 selectedImageUri = data.getData();
-                photoBitmap = null; // Clear bitmap if gallery is used
+                photoBitmap = null; 
                 ivPhotoPreview.setImageURI(selectedImageUri);
                 ivPhotoPreview.setVisibility(View.VISIBLE);
             } else if (requestCode == CAMERA_REQUEST && data.getExtras() != null) {
                 photoBitmap = (Bitmap) data.getExtras().get("data");
-                selectedImageUri = null; // Clear URI if camera is used
+                selectedImageUri = null;
                 ivPhotoPreview.setImageBitmap(photoBitmap);
                 ivPhotoPreview.setVisibility(View.VISIBLE);
             }
@@ -204,6 +203,10 @@ public class ReportHazardActivity extends AppCompatActivity {
     }
 
     private void saveToFirestore(String imageUrl, String hazardType, String description) {
+        String userAgent = android.os.Build.MANUFACTURER + " " +
+                android.os.Build.MODEL + " (Android " +
+                android.os.Build.VERSION.RELEASE + ")";
+
         Map<String, Object> hazard = new HashMap<>();
         hazard.put("hazardType", hazardType);
         hazard.put("description", description);
@@ -213,6 +216,7 @@ public class ReportHazardActivity extends AppCompatActivity {
         hazard.put("status", "New");
         hazard.put("dateTime", tvAutoDateTime.getText().toString().replace("Captured: ", ""));
         hazard.put("imageUrl", imageUrl);
+        hazard.put("userAgent", userAgent);
 
         db.collection("hazards").add(hazard)
                 .addOnSuccessListener(doc -> {
