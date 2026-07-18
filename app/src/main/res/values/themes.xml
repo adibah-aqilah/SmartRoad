@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.SmartRoad" parent="Base.Theme.SmartRoad" />
+
+    <style name="CircleImageView">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

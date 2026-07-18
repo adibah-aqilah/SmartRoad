@@ -3,10 +3,12 @@ package com.example.smartroad;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -15,6 +17,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView tvProfileName;
     private TextView tvProfileEmail;
+    private ImageView ivProfileGif;
     private Button btnLogout;
 
     private TextView tvTotalReports;
@@ -30,7 +33,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         tvProfileName = findViewById(R.id.tvProfileName);
         tvProfileEmail = findViewById(R.id.tvProfileEmail);
+        ivProfileGif = findViewById(R.id.ivProfileGif);
         btnLogout = findViewById(R.id.btnLogout);
+
+        // Load decorative GIF
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.thank_you)
+                .into(ivProfileGif);
 
         tvTotalReports = findViewById(R.id.tvTotalReports);
         tvResolvedReports = findViewById(R.id.tvResolvedReports);

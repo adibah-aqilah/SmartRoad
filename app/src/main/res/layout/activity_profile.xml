@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/background_light"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,28 +22,11 @@
             android:textStyle="bold"
             android:layout_marginBottom="32dp"/>
 
-        <!-- Profile Image Placeholder -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <ImageView
-                android:id="@+id/ivProfilePicture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:background="#E5E7EB"/>
-        </com.google.android.material.card.MaterialCardView>
-
         <TextView
             android:id="@+id/tvProfileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="John Doe"
+            android:text="User Name"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/primary_road"
@@ -52,7 +36,7 @@
             android:id="@+id/tvProfileEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="johndoe@email.com"
+            android:text="user@email.com"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
             android:layout_marginBottom="32dp"/>
@@ -61,7 +45,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/border_light"
@@ -160,17 +144,18 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- Profile Actions -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEditProfile"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <!-- Spacer to push content to the bottom -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Edit Profile"
-            android:textAllCaps="false"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/ivProfileGif"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Thank you animation" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
@@ -178,9 +163,10 @@
             android:layout_height="56dp"
             android:text="Logout"
             android:textAllCaps="false"
-            android:backgroundTint="#EF4444"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"/>
+            android:backgroundTint="@color/accent_warning"
+            android:textColor="@color/primary_road"
+            app:cornerRadius="12dp"
+            android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
 </ScrollView>
