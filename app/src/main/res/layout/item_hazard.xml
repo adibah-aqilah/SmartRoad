@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    tools:targetApi="q"
+    android:forceDarkAllowed="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,15 +22,15 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F3F4F6">
 
             <ImageView
                 android:id="@+id/ivHazardThumb"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_report_image"
-                android:background="#F3F4F6"/>
+                android:src="@android:drawable/ic_menu_report_image" />
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
@@ -52,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:text="3.1234, 101.5678"
                 android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/text_secondary"
                 android:layout_marginTop="2dp"/>
 
             <TextView

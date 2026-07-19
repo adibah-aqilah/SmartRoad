@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:padding="24dp">
+    android:padding="24dp"
+    tools:targetApi="q"
+    android:forceDarkAllowed="false">
 
     <!-- Header Section (Logo & App Title) -->
     <LinearLayout
@@ -104,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/primary_road"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,7 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/primary_road"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,6 +144,7 @@
                 android:layout_marginBottom="12dp"
                 android:hint="Password"
                 app:passwordToggleEnabled="true"
+                app:passwordToggleDrawable="@drawable/password_visibility_selector"
                 app:passwordToggleTint="@color/status_investigating"
                 app:startIconTint="@color/status_investigating"
                 app:boxStrokeColor="@color/status_investigating"
@@ -156,7 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/primary_road"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,6 +172,7 @@
                 android:layout_marginBottom="24dp"
                 android:hint="Confirm Password"
                 app:passwordToggleEnabled="true"
+                app:passwordToggleDrawable="@drawable/password_visibility_selector"
                 app:passwordToggleTint="@color/status_investigating"
                 app:startIconTint="@color/status_investigating"
                 app:boxStrokeColor="@color/status_investigating"
@@ -183,7 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/primary_road"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 

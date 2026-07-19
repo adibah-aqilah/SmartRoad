@@ -5,7 +5,10 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.SmartRoad" parent="Base.Theme.SmartRoad" />
+    <style name="Theme.SmartRoad" parent="Base.Theme.SmartRoad">
+        <item name="colorSecondaryContainer">@color/accent_warning_transparent</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
 
     <style name="CircleImageView">
         <item name="cornerSize">50%</item>

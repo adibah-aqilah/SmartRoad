@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -45,6 +47,12 @@ public class ProfileActivity extends AppCompatActivity {
         tvTotalReports = findViewById(R.id.tvTotalReports);
         tvResolvedReports = findViewById(R.id.tvResolvedReports);
         tvPoints = findViewById(R.id.tvPoints);
+
+        tvTotalReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, HazardFeedActivity.class);
+            intent.putExtra("MY_REPORTS_ONLY", true);
+            startActivity(intent);
+        });
 
         db = FirebaseFirestore.getInstance();
 
@@ -94,12 +102,35 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        setupBottomNavigation();
+    }
+
+    private void setupBottomNavigation() {
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_profile);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (id == R.id.nav_report) {
+                startActivity(new Intent(this, HazardFeedActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                return true;
+            }
+            return false;
+        });
     }
 
     private void loadStatistics(String username) {
 
         db.collection("hazards")
-                .whereEqualTo("username", username)
+                .where(Filter.or(
+                        Filter.equalTo("reporter", username),
+                        Filter.equalTo("username", username)
+                ))
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
 
@@ -108,8 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     int resolved = 0;
 
-                    for (com.google.firebase.firestore.QueryDocumentSnapshot document
-                            : querySnapshot) {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
 
                         String status =
                                 document.getString(

@@ -1,5 +1,6 @@
 package com.example.smartroad;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 public class HazardDetailsActivity extends AppCompatActivity {
 
@@ -25,6 +25,10 @@ public class HazardDetailsActivity extends AppCompatActivity {
     private TextView tvReporterName;
 
     private ImageView ivHazardPhoto;
+    private Button btnUpdateStatus;
+    private String hazardId;
+    private com.google.android.material.card.MaterialCardView cardStatus;
+    private com.google.firebase.firestore.FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class HazardDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hazard_details);
 
         tvStatus = findViewById(R.id.tvStatus);
+        cardStatus = findViewById(R.id.cardStatus);
         tvHazardType = findViewById(R.id.tvHazardType);
         tvHazardDescription = findViewById(R.id.tvHazardDescription);
         tvDetailLocation = findViewById(R.id.tvDetailLocation);
@@ -39,17 +44,48 @@ public class HazardDetailsActivity extends AppCompatActivity {
         tvReporterName = findViewById(R.id.tvReporterName);
 
         ivHazardPhoto = findViewById(R.id.ivHazardImage);
+        btnUpdateStatus = findViewById(R.id.btnUpdateStatus);
+
+        db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
 
         Button btnBack = findViewById(R.id.btnBack);
 
         String documentId = getIntent().getStringExtra("DOCUMENT_ID");
+        if (documentId == null) {
+            documentId = getIntent().getStringExtra("ID");
+        }
+
         if (documentId != null) {
+            hazardId = documentId;
             fetchHazardDetails(documentId);
         } else {
             populateFromIntent();
         }
 
+        checkAdminStatus();
+        btnUpdateStatus.setOnClickListener(v -> showUpdateStatusDialog());
         btnBack.setOnClickListener(v -> finish());
+
+        setupBottomNavigation();
+    }
+
+    private void setupBottomNavigation() {
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        // No item selected by default for details page, or we can leave it
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (id == R.id.nav_report) {
+                startActivity(new Intent(this, HazardFeedActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void populateFromIntent() {
@@ -67,14 +103,15 @@ public class HazardDetailsActivity extends AppCompatActivity {
     }
 
     private void fetchHazardDetails(String documentId) {
-        FirebaseFirestore.getInstance().collection("hazards").document(documentId)
+        db.collection("hazards").document(documentId)
                 .get()
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
                         String type = document.getString("hazardType");
                         String status = document.getString("status");
                         String description = document.getString("description");
-                        String reporter = document.getString("username");
+                        String reporter = document.getString("reporter");
+                        if (reporter == null) reporter = document.getString("username");
                         String dateTime = document.getString("dateTime");
                         String imageUrl = document.getString("imageUrl");
                         String imageBase64 = document.getString("imageBase64");
@@ -99,7 +136,7 @@ public class HazardDetailsActivity extends AppCompatActivity {
         if (dateTime == null) dateTime = "Unknown Date";
 
         tvHazardType.setText(type);
-        tvStatus.setText("STATUS: " + status);
+        updateStatusBadge(status);
         tvHazardDescription.setText(description);
         tvDetailLocation.setText("Location: " + location);
         tvDetailTime.setText("Reported: " + dateTime);
@@ -115,5 +152,49 @@ public class HazardDetailsActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             ivHazardPhoto.setImageBitmap(bitmap);
         }
+    }
+
+    private void checkAdminStatus() {
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && "admin@smartroad.com".equals(user.getEmail())) {
+            btnUpdateStatus.setVisibility(android.view.View.VISIBLE);
+        }
+    }
+
+    private void showUpdateStatusDialog() {
+        String[] statuses = {"New", "In Progress", "Resolved", "Duplicate"};
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Update Hazard Status");
+        builder.setItems(statuses, (dialog, which) -> {
+            updateStatus(statuses[which]);
+        });
+        builder.show();
+    }
+
+    private void updateStatusBadge(String status) {
+        if (status == null) status = "New";
+        tvStatus.setText("STATUS: " + status.toUpperCase());
+        
+        int color;
+        if ("Resolved".equalsIgnoreCase(status)) {
+            color = androidx.core.content.ContextCompat.getColor(this, R.color.status_resolved);
+        } else if ("In Progress".equalsIgnoreCase(status) || "Investigating".equalsIgnoreCase(status)) {
+            color = androidx.core.content.ContextCompat.getColor(this, R.color.status_investigating);
+        } else if ("Duplicate".equalsIgnoreCase(status)) {
+            color = android.graphics.Color.GRAY;
+        } else {
+            color = androidx.core.content.ContextCompat.getColor(this, R.color.status_new);
+        }
+        cardStatus.setCardBackgroundColor(android.content.res.ColorStateList.valueOf(color));
+    }
+
+    private void updateStatus(String newStatus) {
+        if (hazardId == null) return;
+        db.collection("hazards").document(hazardId)
+                .update("status", newStatus)
+                .addOnSuccessListener(aVoid -> {
+                    updateStatusBadge(newStatus);
+                    android.widget.Toast.makeText(this, "Status updated to " + newStatus, android.widget.Toast.LENGTH_SHORT).show();
+                });
     }
 }

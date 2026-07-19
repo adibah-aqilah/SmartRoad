@@ -63,12 +63,17 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
+            btnSignUp.setEnabled(false);
+            btnSignUp.setText("Creating Account...");
+
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             String userId = mAuth.getCurrentUser().getUid();
                             saveUserToFirestore(userId, fullName, email);
                         } else {
+                            btnSignUp.setEnabled(true);
+                            btnSignUp.setText("Create Account");
                             Toast.makeText(SignupActivity.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });

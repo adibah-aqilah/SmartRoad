@@ -77,6 +77,27 @@ public class ReportHazardActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(v -> checkCameraPermission());
 
         btnSubmitReport.setOnClickListener(v -> submitReport());
+
+        setupBottomNavigation();
+    }
+
+    private void setupBottomNavigation() {
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_report);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (id == R.id.nav_report) {
+                startActivity(new Intent(this, HazardFeedActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void fetchUserData() {
@@ -239,7 +260,7 @@ public class ReportHazardActivity extends AppCompatActivity {
                 getIntent().getDoubleExtra("LAT", 0));
         hazard.put("longitude",
                 getIntent().getDoubleExtra("LNG", 0));
-        hazard.put("username", reporterName);
+        hazard.put("reporter", reporterName);
         hazard.put("status", "New");
         hazard.put(
                 "dateTime",

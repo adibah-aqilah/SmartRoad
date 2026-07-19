@@ -1,109 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/background_light"
+    tools:targetApi="q"
+    android:forceDarkAllowed="false">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:forceDarkAllowed="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="32dp"
-            android:src="@drawable/smartroad_logo"
-            android:background="@android:color/white"
-            android:padding="6dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/white"
-            app:shapeAppearanceOverlay="@style/CircleImageView"
-            android:elevation="4dp"
-            android:contentDescription="SmartRoad Logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SmartRoad"
-            android:textColor="@color/primary_road"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Version 1.0.0 Stable"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
-            android:layout_marginBottom="32dp"/>
-
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
 
-            <LinearLayout
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/smartroad_logo"
+                android:background="@android:color/white"
+                android:padding="6dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/white"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                android:elevation="4dp"
+                android:contentDescription="SmartRoad Logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SmartRoad"
+                android:textColor="@color/primary_road"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Version 1.0.0 Stable"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginBottom="32dp"/>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/border_light"
+                android:layout_marginBottom="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Development Team"
-                    android:textColor="@color/primary_road"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvDeveloperList"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1. MUHAMMAD NAIM KHUSYAIRI BIN JAAFAR\n   (2024757865)\n\n2. NUR AYLA IZATY BINTI ROSLAN\n   (2024783817)\n\n3. NURIN JAZLINA BINTI MASDAN\n   (2024788725)\n\n4. NURUL ADIBAH AQILAH BINTI MOHD GHAZALI\n   (2024784113)"
-                    android:textColor="@color/primary_road"
-                    android:lineSpacingExtra="6dp"
-                    android:textSize="15sp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGithub"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Visit our GitHub Repository"
-            android:textColor="@color/accent_warning"
-            android:textStyle="bold"
-            app:icon="@android:drawable/ic_menu_share"
-            app:iconTint="@color/accent_warning"
-            android:layout_marginBottom="24dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Development Team"
+                        android:textColor="@color/primary_road"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="© 2026 SmartRoad Inc."
-            android:textColor="@android:color/darker_gray"
-            android:textSize="12sp"
-            android:layout_marginBottom="8dp"/>
+                    <TextView
+                        android:id="@+id/tvDeveloperList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. MUHAMMAD NAIM KHUSYAIRI BIN JAAFAR\n   (2024757865)\n\n2. NUR AYLA IZATY BINTI ROSLAN\n   (2024783817)\n\n3. NURIN JAZLINA BINTI MASDAN\n   (2024788725)\n\n4. NURUL ADIBAH AQILAH BINTI MOHD GHAZALI\n   (2024784113)"
+                        android:textColor="@color/primary_road"
+                        android:lineSpacingExtra="6dp"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All Rights Reserved."
-            android:textColor="@android:color/darker_gray"
-            android:textSize="12sp"
-            android:layout_marginBottom="32dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGithub"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Visit our GitHub Repository"
+                android:textColor="@color/accent_warning"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_share"
+                app:iconTint="@color/accent_warning"
+                android:layout_marginBottom="24dp"/>
 
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="© 2026 SmartRoad Inc."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Rights Reserved."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:layout_marginBottom="32dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="@color/white"
+        app:itemIconSize="32dp"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity
 
     private double selectedLat = 0;
     private double selectedLng = 0;
+    private boolean isInitialZoomDone = false;
+    private Marker selectionMarker;
+    private Marker userLocationMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +64,25 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser user =
                 FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null && user.getEmail() != null) {
+        if (user != null) {
+            // Default to email prefix while loading
+            String email = user.getEmail();
+            if (email != null) {
+                String name = email.split("@")[0];
+                tvGreeting.setText("Hello, " + name + "!");
+            }
 
-            String name =
-                    user.getEmail().split("@")[0];
-
-            name = name.replace("_", " ");
-            name = name.replace(".", " ");
-
-            name = name.substring(0, 1).toUpperCase()
-                    + name.substring(1);
-
-            tvGreeting.setText("Hello, " + name + "!");
+            // Fetch actual Full Name from Firestore
+            db.collection("users").document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String fullName = documentSnapshot.getString("fullName");
+                            if (fullName != null && !fullName.isEmpty()) {
+                                tvGreeting.setText("Hello, " + fullName + "!");
+                            }
+                        }
+                    });
         }
 
         SupportMapFragment mapFragment =
@@ -125,11 +135,25 @@ public class MainActivity extends AppCompatActivity
                             MainActivity.this,
                             ReportHazardActivity.class
                     );
-
             intent.putExtra("LAT", selectedLat);
             intent.putExtra("LNG", selectedLng);
-
             startActivity(intent);
+        });
+
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_home);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                return true;
+            } else if (id == R.id.nav_report) {
+                startActivity(new Intent(this, HazardFeedActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            }
+            return false;
         });
     }
 
@@ -147,7 +171,11 @@ public class MainActivity extends AppCompatActivity
             selectedLat = latLng.latitude;
             selectedLng = latLng.longitude;
 
-            mMap.addMarker(
+            if (selectionMarker != null) {
+                selectionMarker.remove();
+            }
+
+            selectionMarker = mMap.addMarker(
                     new MarkerOptions()
                             .position(latLng)
                             .title("Hazard Location Selected")
@@ -264,26 +292,60 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setMyLocationEnabled(true);
 
-        // Fetching more accurate/current location using requestLocationUpdates would be better, 
-        // but for now let's ensure getLastLocation is used robustly.
+        // Try to get last known location first (fast)
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
-                LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                
-                // Only move camera and add "You Are Here" marker if we haven't selected a spot yet
-                if (selectedLat == 0 && selectedLng == 0) {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(currentLocation)
-                            .title("You Are Here")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16f));
-                }
+                updateMapToLocation(location);
             } else {
-                // If last location is null, we can try to get the current location explicitly
-                // Toast.makeText(this, "Unable to get current location. Ensure GPS is ON.", Toast.LENGTH_SHORT).show();
+                // If last location is null, request current location explicitly
+                requestFreshLocation();
             }
         });
+    }
+
+    private void requestFreshLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        com.google.android.gms.location.CurrentLocationRequest request = 
+                new com.google.android.gms.location.CurrentLocationRequest.Builder()
+                .setPriority(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY)
+                .build();
+
+        fusedLocationClient.getCurrentLocation(request, null).addOnSuccessListener(location -> {
+            if (location != null) {
+                updateMapToLocation(location);
+            } else {
+                Toast.makeText(this, "Still unable to get location. Is GPS on?", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updateMapToLocation(android.location.Location location) {
+        if (location == null) return;
+        
+        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        // Automatically set selected location if not already set by map click
+        if (selectedLat == 0 && selectedLng == 0) {
+            selectedLat = location.getLatitude();
+            selectedLng = location.getLongitude();
+        }
+
+        if (userLocationMarker != null) {
+            userLocationMarker.remove();
+        }
+
+        userLocationMarker = mMap.addMarker(new MarkerOptions()
+                .position(currentLocation)
+                .title("You Are Here")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+        if (!isInitialZoomDone) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16f));
+            isInitialZoomDone = true;
+        }
     }
 
     @Override
